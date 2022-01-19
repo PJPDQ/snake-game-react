@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const GameBoard = () => {
-  const width = 500;
-  const height = 500;
+  const width = 100;
+  const height = 100;
   const canvas = useRef(null);
   const [snake, setSnake] = useState([
     [2, 0],
@@ -13,12 +13,13 @@ const GameBoard = () => {
   const [food, setFood] = useState(randomPosition);
 
   function randomPosition() {
-    return {
-      x: Math.floor(Math.random() * width),
-      y: Math.floor(Math.random() * height)
+    var pos = {
+        x: Math.floor(Math.random() * 10) * 10,
+        y: Math.floor(Math.random() * 10) * 10
     };
+    return pos;
   }
-  useEffect(() => {
+  const renderSnake = () => {
     var ctx = canvas.current.getContext("2d");
     ctx.clearRect(0, 0, 100, 100);
     ctx.fillStyle = "rgb(0, 0, 0)";
@@ -29,7 +30,7 @@ const GameBoard = () => {
 
     ctx.fillStyle = "rgb(200, 0, 200)";
     ctx.fillRect(food.x, food.y, 10, 10);
-  }, snake);
+  }
 
   const handleKeyPress = (e) => {
     switch (e.keyCode) {
@@ -51,7 +52,7 @@ const GameBoard = () => {
   };
   document.addEventListener("keydown", handleKeyPress, false);
   const moveSnake = () => {
-    let tailSnake = snake.slice(0, -1);
+    let tailSnake = snake[snake.length-1];
     switch (direction) {
       case "right":
         setSnake([[snake[0][0] + 1, snake[0][1]], ...snake.slice(0, -1)]);
@@ -68,10 +69,11 @@ const GameBoard = () => {
       default:
         break;
     }
-    if (snake[0][0] === food.x && snake[0][1] === food.y) {
-      setFood(randomPosition);
-      setSnake([...snake, tailSnake]);
+    if (snake[0][0]*10 === food.x && snake[0][1]*10 === food.y) {
+        setFood(randomPosition);
+        setSnake([...snake, tailSnake]);
     }
+    renderSnake();
   };
 
   useInterval(moveSnake, 1000);
